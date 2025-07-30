@@ -61,7 +61,7 @@ class GraphDataset(data.Dataset):
         super(GraphDataset, self).__init__()
         self.root = root
         self.ids = ids
-        self.classdict = {'normal': 0, 'luad': 1, 'lscc': 2}
+        self.classdict = classdict
         self.site = site
 
 
