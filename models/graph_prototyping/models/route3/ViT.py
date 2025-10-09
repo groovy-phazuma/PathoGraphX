@@ -291,6 +291,7 @@ class VisionTransformer(nn.Module):
             for i in range(depth)])
 
         self.norm = LayerNorm(embed_dim)
+        self.wo_head = wo_head
         if wo_head:
             self.head = nn.Identity()
         else:
@@ -342,10 +343,9 @@ class VisionTransformer(nn.Module):
         return x
 
     def relprop(self, cam=None,method="transformer_attribution", is_ablation=False, start_layer=0, **kwargs):
-        # print(kwargs)
-        # print("conservation 1", cam.sum())
-        cam = self.head.relprop(cam, **kwargs)
-        cam = cam.unsqueeze(1)
+        if self.wo_head == False:
+            cam = self.head.relprop(cam, **kwargs)
+            cam = cam.unsqueeze(1)
         cam = self.pool.relprop(cam, **kwargs)
         cam = self.norm.relprop(cam, **kwargs)
         for blk in reversed(self.blocks):

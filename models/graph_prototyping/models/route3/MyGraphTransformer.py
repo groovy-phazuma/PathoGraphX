@@ -68,7 +68,7 @@ class Classifier(nn.Module):
         dot_c = torch.matmul(out, proto_out)  # (B, n_proto)
         dot_out = self.head(dot_c)  # (B, n_class)
 
-        loss = self.criterion(out, labels)
+        loss = self.criterion(dot_out, labels)
         loss = loss + mc1 + o1
         # pred
         pred = dot_out.data.max(1)[1]

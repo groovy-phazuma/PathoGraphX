@@ -72,7 +72,7 @@ class Trainer(object):
     def plot_cm(self):
         self.metrics.plotcm()
 
-    def train(self, sample, model, n_features: int = 512, proto_feats=None, proto_adj=None):
+    def train(self, sample, model, n_features=512, proto_feats=None, proto_adj=None):
         node_feat, labels, adjs, masks = preparefeatureLabel(sample['image'], sample['label'], sample['adj_s'], n_features=n_features)
         pred,labels,loss = model.forward(node_feat, labels, adjs, masks, proto_feats, proto_adj)
 
@@ -93,12 +93,12 @@ class Evaluator(object):
     def plot_cm(self):
         self.metrics.plotcm()
 
-    def eval_test(self, sample, model, graphcam_flag=False, n_features : int = 512):
+    def eval_test(self, sample, model, graphcam_flag=False, n_features=512, proto_feats=None, proto_adj=None):
         node_feat, labels, adjs, masks = preparefeatureLabel(sample['image'], sample['label'], sample['adj_s'], n_features=n_features)
         if not graphcam_flag:
             with torch.no_grad():
-                pred,labels,loss = model.forward(node_feat, labels, adjs, masks)
+                pred,labels,loss = model.forward(node_feat, labels, adjs, masks, proto_feats, proto_adj)
         else:
             torch.set_grad_enabled(True)
-            pred,labels,loss= model.forward(node_feat, labels, adjs, masks, graphcam_flag=graphcam_flag)
+            pred,labels,loss= model.forward(node_feat, labels, adjs, masks, graphcam_flag=graphcam_flag, proto_features=proto_feats, proto_adj=proto_adj)
         return pred,labels,loss
